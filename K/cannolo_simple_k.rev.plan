@@ -1,0 +1,101 @@
+fluents:
+taken_cannolo.
+fried_cannolo.
+stuffed_cannolo.
+bar_taken_cannolo.
+bar_fried_cannolo.
+bar_stuffed_cannolo.
+sep_occ.
+goal_cond.
+normal.
+start_cond.
+
+actions:
+take_cannolo.
+discard_cannolo.
+fry_cannolo.
+stuff_cannolo.
+sep.
+
+always:
+executable take_cannolo if -normal.
+nonexecutable take_cannolo if normal, sep.
+executable discard_cannolo if -normal.
+nonexecutable discard_cannolo if normal, sep.
+executable fry_cannolo if -normal.
+nonexecutable fry_cannolo if normal, sep.
+executable stuff_cannolo if -normal.
+nonexecutable stuff_cannolo if normal, sep.
+executable sep if -normal.
+executable sep if -sep_occ.
+executable take_cannolo if normal.
+caused taken_cannolo if normal after take_cannolo, not sep.
+executable discard_cannolo if normal, taken_cannolo.
+caused -taken_cannolo if normal after discard_cannolo, not sep.
+executable fry_cannolo if normal, taken_cannolo.
+caused fried_cannolo if normal after fry_cannolo, not sep.
+executable stuff_cannolo if normal, fried_cannolo.
+caused stuffed_cannolo if normal after stuff_cannolo, not sep.
+caused -fried_cannolo if normal after stuff_cannolo, not sep.
+inertial taken_cannolo if normal.
+inertial fried_cannolo if normal.
+inertial stuffed_cannolo if normal.
+noConcurrency.
+caused taken_cannolo after taken_cannolo, -normal.
+caused -taken_cannolo after -taken_cannolo, -normal.
+caused taken_cannolo if -normal after bar_taken_cannolo, normal.
+caused -taken_cannolo if -normal after -bar_taken_cannolo, normal.
+caused bar_taken_cannolo after bar_taken_cannolo.
+caused -bar_taken_cannolo after -bar_taken_cannolo.
+caused taken_cannolo if normal after taken_cannolo, sep.
+caused -taken_cannolo if normal after -taken_cannolo, sep.
+caused -goal_cond if normal, taken_cannolo, -bar_taken_cannolo.
+caused -goal_cond if normal, -taken_cannolo, bar_taken_cannolo.
+caused fried_cannolo after fried_cannolo, -normal.
+caused -fried_cannolo after -fried_cannolo, -normal.
+caused fried_cannolo if -normal after bar_fried_cannolo, normal.
+caused -fried_cannolo if -normal after -bar_fried_cannolo, normal.
+caused bar_fried_cannolo after bar_fried_cannolo.
+caused -bar_fried_cannolo after -bar_fried_cannolo.
+caused fried_cannolo if normal after fried_cannolo, sep.
+caused -fried_cannolo if normal after -fried_cannolo, sep.
+caused -goal_cond if normal, fried_cannolo, -bar_fried_cannolo.
+caused -goal_cond if normal, -fried_cannolo, bar_fried_cannolo.
+caused stuffed_cannolo after stuffed_cannolo, -normal.
+caused -stuffed_cannolo after -stuffed_cannolo, -normal.
+caused stuffed_cannolo if -normal after bar_stuffed_cannolo, normal.
+caused -stuffed_cannolo if -normal after -bar_stuffed_cannolo, normal.
+caused bar_stuffed_cannolo after bar_stuffed_cannolo.
+caused -bar_stuffed_cannolo after -bar_stuffed_cannolo.
+caused stuffed_cannolo if normal after stuffed_cannolo, sep.
+caused -stuffed_cannolo if normal after -stuffed_cannolo, sep.
+caused -goal_cond if normal, stuffed_cannolo, -bar_stuffed_cannolo.
+caused -goal_cond if normal, -stuffed_cannolo, bar_stuffed_cannolo.
+caused sep_occ after sep.
+caused sep_occ after sep_occ.
+caused -sep_occ after -sep_occ, not sep.
+caused -goal_cond if normal,-sep_occ.
+total normal.
+caused normal after normal, sep_occ.
+caused normal after normal, sep.
+caused -normal after -normal.
+caused -goal_cond if normal, -sep_occ.
+caused goal_cond if normal,not -goal_cond.
+caused goal_cond if -normal.
+
+initially:
+-sep_occ.
+caused bar_taken_cannolo if taken_cannolo.
+caused -bar_taken_cannolo if -taken_cannolo.
+total taken_cannolo.
+caused bar_fried_cannolo if fried_cannolo.
+caused -bar_fried_cannolo if -fried_cannolo.
+total fried_cannolo.
+caused bar_stuffed_cannolo if stuffed_cannolo.
+caused -bar_stuffed_cannolo if -stuffed_cannolo.
+total stuffed_cannolo.
+caused start_cond if bar_taken_cannolo.
+caused false if not start_cond.
+
+goal:
+goal_cond?

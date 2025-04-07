@@ -1,0 +1,6 @@
+PLAN: discard_cannolo; sep; take_cannolo
+PLAN: discard_cannolo; sep; (no action)
+PLAN: (no action); sep; (no action)
+PLAN: take_cannolo; sep; (no action)
+PLAN: (no action); sep; take_cannolo
+PLAN: take_cannolo; sep; take_cannolo

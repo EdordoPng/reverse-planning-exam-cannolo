@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE conditions SYSTEM "/home/cristian/Desktop/tautonico_project/reversibility-tools-2025/RevPlan/bin/DTD/conditions.dtd">
+<conditions>
+    <phi>
+            <term> true </term>
+    </phi>
+    <psi>
+        <and>
+            <term>taken_cannolo</term>
+        </and>
+    </psi>
+</conditions>

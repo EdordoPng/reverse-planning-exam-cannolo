@@ -1,0 +1,88 @@
+%@exists
+time(0..2).
+horizon(1).
+
+%%% Guess action to check for reversability.
+{ chosen(A) } :- action(action(A)).
+:- #count{A:chosen(A)} != 1.
+
+%%% Guess plan. First action is the chosen one, the others will be the reverse plan (if it does reverse).
+occurs(A, 1) :- chosen(A).
+{occurs(A, T)} :- action(action(A)), time(T), T > 1.
+:- #count{A:occurs(A, T)}!=1,time(T), T > 1.
+plan(A, T - 1) :- occurs(A, T), T > 1.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%---------------------------------------
+% domain
+%---------------------------------------
+
+% utils
+boolean(true).
+boolean(false).
+
+% types
+type(type("object")).
+
+% variables
+variable(variable("taken_cannolo")).
+variable(variable("fried_cannolo")).
+variable(variable("sacpoche_filled")).
+variable(variable("stuffed_cannolo")).
+
+contains(X, value(X, B)) :- variable(X), boolean(B).
+
+% actions
+action(action("take_cannolo")).
+postcondition(action("take_cannolo"), effect(unconditional), variable("taken_cannolo"), value(variable("taken_cannolo"), true)) :- action(action("take_cannolo")).
+
+action(action("discard_cannolo")).
+precondition(action("discard_cannolo"), variable("taken_cannolo"), value(variable("taken_cannolo"), true)) :- action(action("discard_cannolo")).
+postcondition(action("discard_cannolo"), effect(unconditional), variable("taken_cannolo"), value(variable("taken_cannolo"), false)) :- action(action("discard_cannolo")).
+
+action(action("fry_cannolo")).
+precondition(action("fry_cannolo"), variable("taken_cannolo"), value(variable("taken_cannolo"), true)) :- action(action("fry_cannolo")).
+postcondition(action("fry_cannolo"), effect(unconditional), variable("fried_cannolo"), value(variable("fried_cannolo"), true)) :- action(action("fry_cannolo")).
+
+action(action("add_cottage_cheese")).
+postcondition(action("add_cottage_cheese"), effect(unconditional), variable("sacpoche_filled"), value(variable("sacpoche_filled"), true)) :- action(action("add_cottage_cheese")).
+
+action(action("stuff_cannolo")).
+precondition(action("stuff_cannolo"), variable("sacpoche_filled"), value(variable("sacpoche_filled"), true)) :- action(action("stuff_cannolo")).
+precondition(action("stuff_cannolo"), variable("fried_cannolo"), value(variable("fried_cannolo"), true)) :- action(action("stuff_cannolo")).
+postcondition(action("stuff_cannolo"), effect(unconditional), variable("stuffed_cannolo"), value(variable("stuffed_cannolo"), true)) :- action(action("stuff_cannolo")).
+postcondition(action("stuff_cannolo"), effect(unconditional), variable("fried_cannolo"), value(variable("fried_cannolo"), false)) :- action(action("stuff_cannolo")).
+postcondition(action("stuff_cannolo"), effect(unconditional), variable("sacpoche_filled"), value(variable("sacpoche_filled"), false)) :- action(action("stuff_cannolo")).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%@forall
+
+%%% Establish necessary bits of the initial state: preconditions of the to-be-reversed action must hold.
+holds(V, Val, 0) :- chosen(A), precondition(action(A), variable(V), value(variable(V), Val)).
+
+%%% For all initial states...
+{holds(V,Val,0)} :- contains(variable(V),value(variable(V),Val)).
+:- #count{Val:holds(V,Val,0)} != 1, variable(variable(V)).
+
+
+% Action effects.
+caused(V, Val, T) :-
+	occurs(A, T),
+	postcondition(action(A), E, variable(V), value(variable(V), Val)).
+
+%%% Inertia rules
+
+modified(V, T) :- caused(V, _, T).
+holds(V, Val, T) :- caused(V, Val, T).
+holds(V, Val, T) :- holds(V, Val, T - 1), not modified(V, T), time(T).
+
+
+%@constraint
+
+%%% Plan that does not reverse the chosen action?
+:- holds(V, Val, 0), not holds(V, Val, H+1), horizon(H).
+:- holds(V, Val, H+1), not holds(V, Val, 0), horizon(H).
+
+%%% Unmet preconditions?
+:- occurs(A, T), precondition(action(A), variable(V), value(variable(V), Val)), not holds(V, Val, T - 1).
+

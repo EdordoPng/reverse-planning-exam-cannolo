@@ -1,0 +1,43 @@
+fluents:
+    taken_cannolo.
+    fried_cannolo.
+    sacpoche_filled.
+    stuffed_cannolo.
+
+actions:
+    take_cannolo.
+    discard_cannolo.
+    fry_cannolo.
+    add_cottage_cheese.
+    stuff_cannolo.
+
+always:
+
+    executable take_cannolo.
+	caused taken_cannolo after take_cannolo.
+
+    executable discard_cannolo if taken_cannolo.
+	caused -taken_cannolo after discard_cannolo.
+
+    executable fry_cannolo if taken_cannolo.
+	caused fried_cannolo after fry_cannolo.
+
+    executable add_cottage_cheese.
+	caused sacpoche_filled after add_cottage_cheese.
+
+    executable stuff_cannolo if fried_cannolo, sacpoche_filled.
+	caused stuffed_cannolo after stuff_cannolo.
+    caused -fried_cannolo after stuff_cannolo.
+    caused -sacpoche_filled after stuff_cannolo.
+
+    
+	inertial taken_cannolo.
+	inertial fried_cannolo.
+	inertial sacpoche_filled.
+    inertial stuffed_cannolo.
+    
+noConcurrency.
+	
+
+goal:
+	stuffed_cannolo?

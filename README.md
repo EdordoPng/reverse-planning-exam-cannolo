@@ -1,8 +1,6 @@
 # cannolo-reverse-planning
 This repository contains a problem developed to show a Universally Reversible Action
 
-# 🥐 Cannolo Reverse Planning 
-
 This project explores various tools and techniques for solving **Reverse Planning** problems by modeling a domain inspired by the preparation of the *Sicilian cannolo* 🍩🇮🇹.  
 The objective is to compare approaches using PDDL (STRIPS), Answer Set Programming (ASP), epistemic reasoning (Eclingo), and planning in **K language** with **DLV^k**.
 
